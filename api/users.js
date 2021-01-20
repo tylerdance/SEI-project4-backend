@@ -12,6 +12,14 @@ router.get('/test', (req, res) => {
     res.json({ message: 'User endpoint' })
 })
 
+// get all users from database
+router.get('/users', (req, res) => {
+    db.User.find().then((user) => {
+        console.log(user);
+        res.status(201).json({ user })
+    }).catch((error) => { res.send({ error })})
+})
+
 // POST api/users/register (Public route)
 router.post('/register', (req, res) => {
     // find user by email

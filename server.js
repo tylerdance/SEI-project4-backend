@@ -26,8 +26,8 @@ app.use(express.json());
 app.get('/', (req,res) => {
     res.status(200).json({message: 'Rome is always watching over you....'})
 })
-const users =require('./api/users');
-app.use('/api/users' ,users);
+const users = require('./api/users');
+app.use('/api/users', users);
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     next();
