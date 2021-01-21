@@ -34,6 +34,11 @@ router.post('/register', (req, res) => {
                 name: req.body.name,
                 email: req.body.email,
                 password: req.body.password,
+                age: req.body.age,
+                gender: req.body.gender,
+                bio: req.body.bio,
+                preference: req.body.preference,
+                image_url: req.body.photo
             })
             // Salt and hash the password, then save the user
             bcrypt.genSalt(10, (err, salt) => {
@@ -95,5 +100,38 @@ router.get('/current', passport.authenticate('jwt', { session: false }), (req, r
         email: req.user.email,
     })
 })
+
+router.get('/myphoto/:id', (req,res)=>{
+    db.User.find({ email: req.params.id }).then((user) => {
+      res.status(201).json({ user })
+    }).catch((error) => res.send({ error }))
+  })
+
+router.post('/profile/setup/image', (req, res) => {
+    const email = req.body.email;
+    db.User.update(
+      { email: email },
+      { $set: { "image_url": req.body.image_url }
+      }
+    ).then((response) => {
+      res.status(201).json({ response })
+    }).catch((error) => res.send({ error }))
+  })
+
+router.get('/users/random', (req, res) => {
+    // db.User.count().then((user) => {
+        db.User.aggregate([{ $sample: { size: 1 } }]).then((user) => {
+        // console.log(Math.floor(Math.random() * user));
+        // const randomUser = Math.floor(Math.random() * user)
+        console.log(user);
+        res.status(201).json({ user })
+    }).catch((error) => { res.send({ error })})
+})
+
+router.get('/myinfo/:id', (req,res)=>{
+    db.User.find({ email: req.params.id }).then((user) => {
+      res.status(201).json({ user })
+    }).catch((error) => res.send({ error }))
+  })
 
 module.exports = router;
