@@ -21,7 +21,7 @@ const NEW_CHAT_MESSAGE_EVENT = "newChatMessage";
 ///////////////////////////////////////////////
 
 app.use(cors());
-app.use(express.urlencoded({extend: false}));
+app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.get('/', (req,res) => {
     res.status(200).json({message: 'Rome is always watching over you....'})

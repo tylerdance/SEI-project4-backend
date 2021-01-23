@@ -76,6 +76,10 @@ router.post('/login', (req, res) => {
                         id: user.id,
                         email: user.email,
                         name: user.name,
+                        age: user.age,
+                        bio: user.bio,
+                        gender: user.gender,
+                        preference: user.preference
                     }
                     // sign token
                     jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' }, (error, token) => {
@@ -133,5 +137,29 @@ router.get('/myinfo/:id', (req,res)=>{
       res.status(201).json({ user })
     }).catch((error) => res.send({ error }))
   })
+
+// get one random male user
+
+router.get('/users/male', (req, res) => {
+    db.User.aggregate([{ $match: { gender: "male" }}])
+    .then((user) => {
+        let num = Math.floor(Math.random() * user.length)
+        const profile = user[num]
+        console.log(profile);
+        // console.log(user);
+        res.status(201).json({ profile })
+    }).catch((error) => { res.send({ error })})
+})
+// get one random female user
+router.get('/users/female', (req, res) => {
+    db.User.aggregate([{ $match: { gender: "female" }}])
+    .then((user) => {
+        let num = Math.floor(Math.random() * user.length)
+        const profile = user[num]
+        console.log(profile);
+        // console.log(user);
+        res.status(201).json({ profile })
+    }).catch((error) => { res.send({ error })})
+})
 
 module.exports = router;
