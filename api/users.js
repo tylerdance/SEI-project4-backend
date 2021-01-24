@@ -37,8 +37,8 @@ router.post('/register', (req, res) => {
                 age: req.body.age,
                 gender: req.body.gender,
                 bio: req.body.bio,
-                preference: req.body.preference,
-                image_url: req.body.photo
+                preference: req.body.preference
+               
             })
             // Salt and hash the password, then save the user
             bcrypt.genSalt(10, (err, salt) => {
@@ -77,9 +77,11 @@ router.post('/login', (req, res) => {
                         email: user.email,
                         name: user.name,
                         age: user.age,
-                        bio: user.bio,
+                        image_url: user.image_url,
                         gender: user.gender,
-                        preference: user.preference
+                        preference: user.preference,
+                        bio: user.bio
+                        
                     }
                     // sign token
                     jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' }, (error, token) => {
