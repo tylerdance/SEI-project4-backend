@@ -131,13 +131,68 @@ router.get('/myinfo/:id', (req,res)=>{
     }).catch((error) => res.send({ error }))
 })
 
+router.post('/notifications', (req, res) => {
+    console.log('i am req.body', req.body);
+    const from_sender = req.body.id
+    const content = req.body.content;
+    const date = req.body.time;
+    const my_id = req.body.my_id;
+    const type = req.body.type;
+    const read = req.body.read;
+    const pic = req.body.pic;
+    const email = req.body.email
+    const name = req.body.name
+    console.log('i am email', email);
+
+    db.User.update(
+        { email: email },
+        { $push: { "notifications":
+            {
+                "from_sender": from_sender,
+                "content": content,
+                "date": date,
+                "my_id": my_id,
+                "type": type,
+                "read": read,
+                "pic": pic, 
+                "email": email,
+                "name": name
+            }
+        }}
+    ).then((response) => {
+        res.status(201).json({ response })
+    }).catch((error) => res.send({ error }))
+})
+
+// READ NOTIF
+router.post('/notifications/read', (req, res) => {
+    const { email, id, user } = req.body;
+    // const id = req.body.id;
+    const truthy = true
+    db.User.findOneAndUpdate(
+        { '_id': user, 'notifications._id': id },
+        { $set: { "notifications.$.read": truthy }}
+    ).then((response) => {
+        res.status(201).json({ response })
+    }).catch((error) => res.send({ error }))
+})
+
+router.get('/getnotifications/:id', (req, res) =>{ 
+    console.log('i am notifications', req.body.content);
+    db.User.find({ email: req.params.id })
+    .then((user) => {
+        res.status(201).json({ user })
+        console.log('dexter is driving');
+    }).catch((error) => res.send({ error }))
+})
+
 router.get('/users/random', (req, res) => {
 // db.User.count().then((user) => {
     db.User.aggregate([{ $sample: { size: 1 } }]).then((user) => {
     // console.log(Math.floor(Math.random() * user));
         // const randomUser = Math.floor(Math.random() * user)
         let profile = user[0];
-        console.log(user);
+        console.log(user);   
         res.status(201).json({ profile })
     }).catch((error) => { res.send({ error })})
 })

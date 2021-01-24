@@ -1,6 +1,18 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+const notificationsSchema = new Schema({
+    from_sender: String,
+    content: String,
+    date: String,
+    my_id: String,
+    type: String,
+    read: Boolean,
+    pic: String,
+    email: String,
+    name: String,
+})
+
 // User schema
 const userSchema = new Schema({
     name: {
@@ -33,6 +45,7 @@ const userSchema = new Schema({
         type: Date,
         default: Date.now()
     },
+    notifications: [notificationsSchema]
     
 });
 
