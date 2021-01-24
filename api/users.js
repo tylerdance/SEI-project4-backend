@@ -164,6 +164,19 @@ router.post('/notifications', (req, res) => {
     }).catch((error) => res.send({ error }))
 })
 
+// READ NOTIF
+router.post('/notifications/read', (req, res) => {
+    const { email, id, user } = req.body;
+    // const id = req.body.id;
+    const truthy = true
+    db.User.findOneAndUpdate(
+        { '_id': user, 'notifications._id': id },
+        { $set: { "notifications.$.read": truthy }}
+    ).then((response) => {
+        res.status(201).json({ response })
+    }).catch((error) => res.send({ error }))
+})
+
 router.get('/getnotifications/:id', (req, res) =>{ 
     console.log('i am notifications', req.body.content);
     db.User.find({ email: req.params.id })
