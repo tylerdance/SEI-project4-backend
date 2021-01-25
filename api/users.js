@@ -38,7 +38,8 @@ router.post('/register', (req, res) => {
                 gender: req.body.gender,
                 bio: req.body.bio,
                 preference: req.body.preference,
-                image_url: req.body.photo
+                image_url: req.body.photo,
+                location: req.body.location
                
             })
             // Salt and hash the password, then save the user
@@ -81,8 +82,8 @@ router.post('/login', (req, res) => {
                         image_url: user.image_url,
                         gender: user.gender,
                         preference: user.preference,
-                        bio: user.bio
-                        
+                        bio: user.bio,
+                        location: user.location
                     }
                     // sign token
                     jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' }, (error, token) => {
@@ -187,20 +188,65 @@ router.get('/getnotifications/:id', (req, res) =>{
     }).catch((error) => res.send({ error }))
 })
 
-router.get('/users/random', (req, res) => {
-// db.User.count().then((user) => {
-    db.User.aggregate([{ $sample: { size: 1 } }]).then((user) => {
-    // console.log(Math.floor(Math.random() * user));
-        // const randomUser = Math.floor(Math.random() * user)
-        let profile = user[0];
-        console.log(user);   
+///////////////////////////////////////////// RANDOM ROUTES //////////////////////////////////////////////////////
+
+/// new random route for males with prefs both
+router.get('/users/random/male/:id/:location', (req, res) => {
+    db.User.find({ $and:
+        [
+            { preference: { $ne: "Female" }},
+            { "email": { $ne: req.params.id }}, 
+            { "location": { $eq: req.params.location }} 
+        ]
+    })
+    .then((user) => {
+        // console.log(`These are all the users -  ${user}`)
+        let num = Math.floor(Math.random() * user.length)
+        const profile = user[num]
+        // console.log(`This is the random profile - ${profile}`)
+        res.status(201).json({ profile })
+    }).catch((error) => { res.send({ error })})
+})
+/// new random route for females with prefs both
+router.get('/users/random/female/:id/:location', (req, res) => {
+    db.User.find({ $and:
+        [
+            { preference: { $ne: "Male" }},
+            { "email": { $ne: req.params.id }}, 
+            { "location": { $eq: req.params.location }} 
+        ]
+    })
+    .then((user) => {
+        // console.log(`These are all the users -  ${user}`)
+        let num = Math.floor(Math.random() * user.length)
+        const profile = user[num]
+        // console.log(`This is the random profile - ${profile}`)
         res.status(201).json({ profile })
     }).catch((error) => { res.send({ error })})
 })
 
+// original random route
+// router.get('/users/random', (req, res) => {
+// // db.User.count().then((user) => {
+//     db.User.aggregate([{ $sample: { size: 1 } }]).then((user) => {
+//     // console.log(Math.floor(Math.random() * user));
+//         // const randomUser = Math.floor(Math.random() * user)
+//         let profile = user[0];
+//         console.log(user);   
+//         res.status(201).json({ profile })
+//     }).catch((error) => { res.send({ error })})
+// })
+
 // get one random female user with male preference
-router.get('/users/male/Female/:id', (req, res) => {
-    db.User.find( { $and: [{ gender: { $ne: "male" } }, { preference: { $ne: "Female" }}, {"email": {$ne: req.params.id} }]})
+router.get('/users/male/Female/:id/:location', (req, res) => {
+    db.User.find({ $and: 
+        [
+            { gender: { $ne: "male" }}, 
+            { preference: { $ne: "Female" }}, 
+            { "email": { $ne: req.params.id }}, 
+            { "location": { $eq: req.params.location }} 
+        ]
+    })
     .then((user) => {
         let num = Math.floor(Math.random() * user.length)
         const profile = user[num]
@@ -209,9 +255,17 @@ router.get('/users/male/Female/:id', (req, res) => {
         res.status(201).json({ profile })
     }).catch((error) => { res.send({ error })})
 })
+
 // get one random male user with female preference
-router.get('/users/female/Male/:id', (req, res) => {
-    db.User.find( { $and: [{ gender: { $ne: "female" } }, { preference: { $ne: "Male" }}, {"email": {$ne: req.params.id}}]})
+router.get('/users/female/Male/:id/:location', (req, res) => {
+    db.User.find( { $and: 
+        [
+            { gender: { $ne: "female" }}, 
+            { preference: { $ne: "Male" }}, 
+            { "email": { $ne: req.params.id }},
+            { "location": { $eq: req.params.location }}
+        ]
+    })
     .then((user) => {
         let num = Math.floor(Math.random() * user.length)
         const profile = user[num]
@@ -222,8 +276,15 @@ router.get('/users/female/Male/:id', (req, res) => {
 })
 
 // get one random female user with female preference
-router.get('/users/female/Female/:id', (req, res) => {
-    db.User.find( { $and: [{ gender: { $ne: "male" } }, { preference: { $ne: "Male" } } , {"email": {$ne: req.params.id}}]})
+router.get('/users/female/Female/:id/:location', (req, res) => {
+    db.User.find( { $and:
+        [
+            { gender: { $ne: "male" }}, 
+            { preference: { $ne: "Male" }}, 
+            { "email": { $ne: req.params.id }},
+            { "location": { $eq: req.params.location }}
+        ]
+    })
     .then((user) => {
         let num = Math.floor(Math.random() * user.length)
         const profile = user[num]
@@ -233,8 +294,15 @@ router.get('/users/female/Female/:id', (req, res) => {
     }).catch((error) => { res.send({ error })})
 })
 // get one random male user with male preference
-router.get('/users/male/Male/:id', (req, res) => {
-    db.User.find( { $and: [{ gender: { $ne: "female" } }, { preference: { $ne: "Female" } } , {"email": {$ne: req.params.id}}]})
+router.get('/users/male/Male/:id/:location', (req, res) => {
+    db.User.find( { $and: 
+        [
+            { gender: { $ne: "female" }}, 
+            { preference: { $ne: "Female" }}, 
+            { "email": {$ne: req.params.id }},
+            { "location": { $eq: req.params.location }}
+        ]
+    })
     .then((user) => {
         let num = Math.floor(Math.random() * user.length)
         const profile = user[num]
@@ -244,6 +312,9 @@ router.get('/users/male/Male/:id', (req, res) => {
     }).catch((error) => { res.send({ error })})
 })
 
+
+
+//////////////// old routes ///////////////////
 // get one random male user
 // router.get('/users/male', (req, res) => {
 //     db.User.aggregate([{ $match: { gender: "male" }}])
