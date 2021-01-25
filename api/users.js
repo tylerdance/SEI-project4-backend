@@ -248,11 +248,16 @@ router.get('/users/male/Female/:id/:location', (req, res) => {
         ]
     })
     .then((user) => {
-        let num = Math.floor(Math.random() * user.length)
-        const profile = user[num]
-        console.log(profile);
-        // console.log(user);
-        res.status(201).json({ profile })
+        console.log('i am user ', user);
+        if (user.length === 0) {
+            // res.status(200).json({ msg: 'Sorry, we could not find anyone in your area' })
+        } else {
+            let num = Math.floor(Math.random() * user.length)
+            const profile = user[num]
+            console.log(profile);
+            // console.log(user);
+            res.status(201).json({ profile })
+        }
     }).catch((error) => { res.send({ error })})
 })
 
@@ -267,11 +272,16 @@ router.get('/users/female/Male/:id/:location', (req, res) => {
         ]
     })
     .then((user) => {
-        let num = Math.floor(Math.random() * user.length)
-        const profile = user[num]
-        console.log(profile);
-        // console.log(user);
-        res.status(201).json({ profile })
+        console.log('i am user ', user);
+        if (user.length === 0) {
+            // res.status(200).json({ msg: 'Sorry, we could not find anyone in your area' })
+        } else {
+            let num = Math.floor(Math.random() * user.length)
+            const profile = user[num]
+            console.log(profile);
+            // console.log(user);
+            res.status(201).json({ profile })
+        }
     }).catch((error) => { res.send({ error })})
 })
 
