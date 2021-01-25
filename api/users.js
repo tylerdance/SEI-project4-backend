@@ -145,7 +145,7 @@ router.post('/notifications', (req, res) => {
     console.log('i am email', email);
 
     db.User.update(
-        { email: email },
+        { _id: my_id },
         { $push: { "notifications":
             {
                 "from_sender": from_sender,
