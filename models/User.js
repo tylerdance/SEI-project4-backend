@@ -40,6 +40,9 @@ const userSchema = new Schema({
     preference: {
         type: String,
     },
+    location: {
+        type: String,
+    },
     image_url: String,
     date: {
         type: Date,
