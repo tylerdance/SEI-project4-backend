@@ -37,7 +37,8 @@ router.post('/register', (req, res) => {
                 age: req.body.age,
                 gender: req.body.gender,
                 bio: req.body.bio,
-                preference: req.body.preference
+                preference: req.body.preference,
+                image_url: req.body.photo
                
             })
             // Salt and hash the password, then save the user
