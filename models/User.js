@@ -48,7 +48,8 @@ const userSchema = new Schema({
         type: Date,
         default: Date.now()
     },
-    notifications: [notificationsSchema]
+    notifications: [notificationsSchema],
+    online : false
     
 });
 

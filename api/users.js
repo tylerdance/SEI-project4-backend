@@ -322,6 +322,19 @@ router.get('/users/male/Male/:id/:location', (req, res) => {
     }).catch((error) => { res.send({ error })})
 })
 
+router.post('/profile/status', (req, res) => {
+    console.log(req)
+    const email = req.body.email;
+    const online = req.body.online
+    db.User.updateOne(
+      { email: email },
+      { $set: { "online": online }
+      }
+    ).then((response) => {
+      res.status(201).json({ response })
+    }).catch((error) => res.send({ error }))
+  })
+
 
 
 //////////////// old routes ///////////////////
