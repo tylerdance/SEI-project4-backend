@@ -5,13 +5,10 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const passport = require('passport')
 const JWT_SECRET = process.env.JWT_SECRET
-
 const db = require('../models')
-
 router.get('/test', (req, res) => {
     res.json({ message: 'User endpoint' })
 })
-
 // get all users from database
 router.get('/users', (req, res) => {
     db.User.find().then((user) => {
@@ -19,7 +16,6 @@ router.get('/users', (req, res) => {
         res.status(201).json({ user })
     }).catch((error) => { res.send({ error })})
 })
-
 // POST api/users/register (Public route)
 router.post('/register', (req, res) => {
     // find user by email
@@ -39,8 +35,7 @@ router.post('/register', (req, res) => {
                 bio: req.body.bio,
                 preference: req.body.preference,
                 image_url: req.body.photo,
-                location: req.body.location,
-                online: req.body.online
+                location: req.body.location
             })
             // Salt and hash the password, then save the user
             bcrypt.genSalt(10, (err, salt) => {
@@ -57,7 +52,6 @@ router.post('/register', (req, res) => {
         }
     })
 })
-
 // POST api/users/login (public)
 router.post('/login', (req, res) => {
     const email = req.body.email
@@ -99,7 +93,6 @@ router.post('/login', (req, res) => {
         }
     })
 })
-
 // GET api/users/current (private)
 router.get('/current', passport.authenticate('jwt', { session: false }), (req, res) => {
     res.json({
@@ -108,13 +101,11 @@ router.get('/current', passport.authenticate('jwt', { session: false }), (req, r
         email: req.user.email,
     })
 })
-
 router.get('/myphoto/:id', (req,res)=>{
     db.User.find({ email: req.params.id }).then((user) => {
       res.status(201).json({ user })
     }).catch((error) => res.send({ error }))
   })
-
 router.post('/profile/setup/image', (req, res) => {
     const email = req.body.email;
     db.User.update(
@@ -125,14 +116,11 @@ router.post('/profile/setup/image', (req, res) => {
       res.status(201).json({ response })
     }).catch((error) => res.send({ error }))
   })
-
-  
 router.get('/myinfo/:id', (req,res)=>{
     db.User.find({ email: req.params.id }).then((user) => {
         res.status(201).json({ user })
     }).catch((error) => res.send({ error }))
 })
-
 router.post('/notifications', (req, res) => {
     console.log('i am req.body', req.body);
     const from_sender = req.body.id
@@ -145,7 +133,6 @@ router.post('/notifications', (req, res) => {
     const email = req.body.email
     const name = req.body.name
     console.log('i am email', email);
-
     db.User.update(
         { _id: my_id },
         { $push: { "notifications":
@@ -165,7 +152,6 @@ router.post('/notifications', (req, res) => {
         res.status(201).json({ response })
     }).catch((error) => res.send({ error }))
 })
-
 // READ NOTIF
 router.post('/notifications/read', (req, res) => {
     const { email, id, user } = req.body;
@@ -178,7 +164,6 @@ router.post('/notifications/read', (req, res) => {
         res.status(201).json({ response })
     }).catch((error) => res.send({ error }))
 })
-
 router.get('/getnotifications/:id', (req, res) =>{ 
     console.log('i am notifications', req.body.content);
     db.User.find({ email: req.params.id })
@@ -187,9 +172,7 @@ router.get('/getnotifications/:id', (req, res) =>{
         console.log('dexter is driving');
     }).catch((error) => res.send({ error }))
 })
-
 ///////////////////////////////////////////// RANDOM ROUTES //////////////////////////////////////////////////////
-
 /// new random route for males with prefs both
 router.get('/users/random/male/:id/:location', (req, res) => {
     db.User.find({ $and:
@@ -224,7 +207,6 @@ router.get('/users/random/female/:id/:location', (req, res) => {
         res.status(201).json({ profile })
     }).catch((error) => { res.send({ error })})
 })
-
 // original random route
 // router.get('/users/random', (req, res) => {
 // // db.User.count().then((user) => {
@@ -236,7 +218,6 @@ router.get('/users/random/female/:id/:location', (req, res) => {
 //         res.status(201).json({ profile })
 //     }).catch((error) => { res.send({ error })})
 // })
-
 // get one random female user with male preference
 router.get('/users/male/Female/:id/:location', (req, res) => {
     db.User.find({ $and: 
@@ -260,7 +241,6 @@ router.get('/users/male/Female/:id/:location', (req, res) => {
         }
     }).catch((error) => { res.send({ error })})
 })
-
 // get one random male user with female preference
 router.get('/users/female/Male/:id/:location', (req, res) => {
     db.User.find( { $and: 
@@ -284,7 +264,6 @@ router.get('/users/female/Male/:id/:location', (req, res) => {
         }
     }).catch((error) => { res.send({ error })})
 })
-
 // get one random female user with female preference
 router.get('/users/female/Female/:id/:location', (req, res) => {
     db.User.find( { $and:
@@ -321,7 +300,6 @@ router.get('/users/male/Male/:id/:location', (req, res) => {
         res.status(201).json({ profile })
     }).catch((error) => { res.send({ error })})
 })
-
 router.post('/profile/status', (req, res) => {
     console.log(req)
     const email = req.body.email;
@@ -334,31 +312,4 @@ router.post('/profile/status', (req, res) => {
       res.status(201).json({ response })
     }).catch((error) => res.send({ error }))
   })
-
-
-
-//////////////// old routes ///////////////////
-// get one random male user
-// router.get('/users/male', (req, res) => {
-//     db.User.aggregate([{ $match: { gender: "male" }}])
-//     .then((user) => {
-//         let num = Math.floor(Math.random() * user.length)
-//         const profile = user[num]
-//         console.log(profile);
-//         // console.log(user);
-//         res.status(201).json({ profile })
-//     }).catch((error) => { res.send({ error })})
-// })
-// // get one random female user
-// router.get('/users/female', (req, res) => {
-//     db.User.aggregate([{ $match: { gender: "female" }}])
-//     .then((user) => {
-//         let num = Math.floor(Math.random() * user.length)
-//         const profile = user[num]
-//         console.log(profile);
-//         // console.log(user);
-//         res.status(201).json({ profile })
-//     }).catch((error) => { res.send({ error })})
-// })
-
 module.exports = router;
