@@ -37,7 +37,7 @@ Token's backend database stores the information from the sign up form that is re
 
 Swipe result routes are automated based on an individual users gender, preference, and location. Multiple instances of `props` are interpolated in the frontend `Axios` requests for the backend to accept as randomization instructions.
 
-`~and` operator is used to pass a 
+`~and` operator is used to pass a series of conditional checks to sort results for different combinations of user gender, preferences, and location.
 
 ```
 router.get('/users/male/Female/:id/:location', (req, res) => {
