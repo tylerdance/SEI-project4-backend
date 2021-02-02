@@ -4,13 +4,15 @@ Token is a websocket based chat app experiment that allows users to find connect
 
 Create test account in Kansas City for populated demo search results.
 
+[Live Site](http://tokenapp-backend.herokuapp.com)
+
 Frontend repo:
 https://github.com/tylerdance/SEI-project4-frontend
 
 Backend repo:
 https://github.com/tylerdance/SEI-project4-backend
 
-### Tech Stack: `MERN`
+### Tech Stack
 ```
 MongoDB / Express / React.js / Node
 ```
@@ -37,9 +39,9 @@ Token's backend database stores the information from the sign up form that is re
 
 Swipe result routes are automated based on an individual users gender, preference, and location. Multiple instances of `props` are interpolated in the frontend `Axios` requests for the backend to accept as randomization instructions.
 
-`~and` operator is used to pass a series of conditional checks to sort results for different combinations of user gender, preferences, and location.
+`~and` operator is used to pass a series of conditional checks to sort results for different combinations of user gender, preferences, and location. The results are then randomized and reduced to 1
 
-```
+```js
 router.get('/users/male/Female/:id/:location', (req, res) => {
     db.User.find({ $and: 
         [
@@ -50,7 +52,6 @@ router.get('/users/male/Female/:id/:location', (req, res) => {
         ]
     })
     .then((user) => {
-        console.log('i am user ', user);
         if (user.length === 0) {
             // res.status(200).json({ msg: 'Sorry, we could not find anyone in your area' })
         } else {
@@ -66,7 +67,7 @@ router.get('/users/male/Female/:id/:location', (req, res) => {
 
 Notifications are handled with a `post` route that flips the `read` boolean in the `notificationsSchema` to truthy if the user hides a notification in their notifications window.
 
-```
+```js
 router.post('/notifications/read', (req, res) => {
     const { email, id, user } = req.body;
     // const id = req.body.id;

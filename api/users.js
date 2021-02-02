@@ -266,7 +266,7 @@ router.get('/users/female/Male/:id/:location', (req, res) => {
 })
 // get one random female user with female preference
 router.get('/users/female/Female/:id/:location', (req, res) => {
-    db.User.find( { $and:
+    db.User.find({ $and:
         [
             { gender: { $ne: "male" }}, 
             { preference: { $ne: "Male" }}, 
@@ -278,9 +278,8 @@ router.get('/users/female/Female/:id/:location', (req, res) => {
         let num = Math.floor(Math.random() * user.length)
         const profile = user[num]
         console.log(profile);
-        // console.log(user);
         res.status(201).json({ profile })
-    }).catch((error) => { res.send({ error })})
+    }).catch((error) => { res.send({ error }) })
 })
 // get one random male user with male preference
 router.get('/users/male/Male/:id/:location', (req, res) => {
